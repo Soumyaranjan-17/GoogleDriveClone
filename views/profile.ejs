@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <div class="max-w-2xl mx-auto mt-10 p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-4">👤 Profile</h1>
+        <div class="space-y-4">
+
+            <!-- User Details -->
+            <div class="p-4 bg-gray-200 dark:bg-gray-700 rounded-md">
+                <p class="text-gray-600 dark:text-gray-300">Name: <strong class="text-gray-800 dark:text-white">hello user</strong></p>
+                <p class="text-gray-600 dark:text-gray-300">Email: <strong class="text-gray-800 dark:text-white">This is your Email</strong></p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-4 mt-6">
+                <a href="/user/edit" class="flex-1 text-center py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">Edit Profile</a>
+                <a href="/user/logout" class="flex-1 text-center py-2 bg-red-500 hover:bg-red-600 text-white rounded-md">Log Out</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
