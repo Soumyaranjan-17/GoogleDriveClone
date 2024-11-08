@@ -4,6 +4,9 @@ const { body, validationResult } = require("express-validator");
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const authMiddleware = require('../middlewares/auth.middleware');
+const { userValidationRules, validate } = require('../middlewares/validator.middleware');
+const userController = require('../controllers/user.controller');
 
 // AUTH pages rendering
 router.get("/signup", (req, res) => {
@@ -21,28 +24,49 @@ router.post(
   body("password").trim().isLength({ min: 5 }),
   body("username").trim().isLength({ min: 5 }),
   async (req, res) => {
-    // Run the validation and get errors (if any)
-    const errors = validationResult(req);
+    try {
+      // Run the validation and get errors (if any)
+      const errors = validationResult(req);
 
-    // Check for validation errors
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        errors: errors.array(),
-        message: "Invalid data",
+      // Check for validation errors
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          errors: errors.array(),
+          message: "Invalid data",
+        });
+      }
+
+      const { email, username, password } = req.body;
+
+      // Check if username already exists
+      const existingUser = await userModel.findOne({ 
+        $or: [
+          { username: username },
+          { email: email }
+        ]
       });
+
+      if (existingUser) {
+        return res.status(400).json({
+          message: existingUser.username === username 
+            ? "Username already exists" 
+            : "Email already exists"
+        });
+      }
+
+      const hashPassword = await bcrypt.hash(password, 10);
+
+      const newUser = await userModel.create({
+        email,
+        username,
+        password: hashPassword,
+      });
+
+      res.render("signup-success");
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
     }
-
-    const { email, username, password } = req.body;
-
-    const hashPassword = await bcrypt.hash(password, 10);
-
-    const newUser = await userModel.create({
-      email,
-      username,
-      password: hashPassword,
-    });
-
-    res.render("signup-success");
   }
 );
 
@@ -92,8 +116,18 @@ router.post(
 );
 
 // User Profile
-router.get("/profile", (req, res) => {
-  res.render("../views/profile");
+router.get('/profile', authMiddleware, (req, res) => {
+    // Now you can access user data through req.user
+    res.render('../views/profile', {
+        username: req.user.username,
+        email: req.user.email
+    });
 });
+
+router.post('/register', 
+    userValidationRules(), 
+    validate,
+    userController.register
+);
 
 module.exports = router;
