@@ -8,8 +8,6 @@ const indexRouter = require('./routes/index.routes'); // Router module for index
 require('dotenv').config(); // Loads environment variables from a .env file
 require('./config/db')(); // Imports and immediately invokes the database connection function
 const cookieParser = require('cookie-parser'); // Middleware for parsing cookies
-const helmet = require('helmet');
-const errorHandler = require('./middlewares/error.middleware');
 
 // Initialize the express app
 const app = express();
@@ -21,12 +19,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public')); 
 app.use(cookieParser()); 
 
-// Add helmet for security headers
-app.use(helmet());
-
-// Comment out these until you're ready to implement them
-// app.use(rateLimit);
-// app.use(csrfProtection);
 
 // Set EJS as the templating engine
 app.set('view engine', 'ejs'); // Tells Express to use EJS as the default template engine for rendering views
@@ -40,11 +32,10 @@ app.use('/', indexRouter); // Gives the `indexRouter` priority, handling any roo
 
 app.use('/user', userRouter); // Handles routes prefixed with `/user` (e.g., `/user/login`)
 
-// Error handling should be last
-app.use(errorHandler);
 
 // Start the server
 const PORT = 3000; // Sets the server port
 app.listen(PORT, 'localhost', () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
