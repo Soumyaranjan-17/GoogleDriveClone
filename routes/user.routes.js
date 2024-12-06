@@ -10,11 +10,11 @@ const userController = require('../controllers/user.controller');
 
 // AUTH pages rendering
 router.get("/signup", (req, res) => {
-  res.render("../views/signup");
+  res.render("signup");
 });
 
 router.get("/login", (req, res) => {
-  res.render("../views/login");
+  res.render("login");
 });
 
 // Auth pages post methods

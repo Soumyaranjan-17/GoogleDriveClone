@@ -23,18 +23,17 @@ app.use(cookieParser());
 // Set EJS as the templating engine
 app.set('view engine', 'ejs'); // Tells Express to use EJS as the default template engine for rendering views
 
-// Define routes
-app.get('/', (req, res) => {
-    res.render('index'); // Renders the `index.ejs` template located in the `views` directory
-});
+// // Define routes
+// app.get('/', (req, res) => {
+//     res.render('index'); // Renders the `index.ejs` template located in the `views` directory
+// });
 
 app.use('/', indexRouter); // Gives the `indexRouter` priority, handling any root URL (`/`) requests
-
 app.use('/user', userRouter); // Handles routes prefixed with `/user` (e.g., `/user/login`)
 
 
 // Start the server
-const PORT = 3000; // Sets the server port
+const PORT = 5000; // Sets the server port
 app.listen(PORT, 'localhost', () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

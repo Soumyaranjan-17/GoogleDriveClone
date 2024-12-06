@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced File Upload Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+
+    <!-- Navbar -->
+    <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto p-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-blue-600 dark:text-blue-400">EnhancedFileUpload</a>
+            <button onclick="toggleTheme()" class="text-gray-600 dark:text-gray-400 px-3">Toggle Theme</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4">
+        <div class="max-w-lg mx-auto bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+
+            <!-- File Upload Form -->
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Upload Files</h2>
+            <form id="uploadForm" class="space-y-4" action="/upload-file" method="post" enctype="multipart/form-data">
+                <!-- Drag-and-Drop upload area with visual feedback -->
+                <div class="flex items-center justify-center w-full">
+                    <label for="dropzone-file" id="dropzone-label"
+                        class="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                            </svg>
+                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
+                                    class="font-semibold">Click to upload</span> or drag and drop</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Any file type supported</p>
+                        </div>
+                        <input id="dropzone-file" type="file" class="hidden" multiple onchange="displayFileNames()"/>
+                    </label>
+                </div>
+
+                <!-- Upload Progress Bar -->
+                <div id="progress-bar" class="w-full bg-gray-200 rounded-lg h-2.5 dark:bg-gray-700 hidden">
+                    <div id="progress" class="h-2.5 bg-blue-600 rounded-lg" style="width: 0%"></div>
+                </div>
+
+                <!-- Clear All Files Button -->
+                <button type="button" onclick="clearFiles()"
+                    class="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700">Clear All
+                    Files</button>
+
+                <!-- Submit Button -->
+                <button type="button" onclick="uploadFilesX()"
+                    class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700">Upload
+                    Files</button>
+            </form>
+
+            <!-- Uploaded Files List -->
+            <div id="uploaded-files" class="mt-6">
+                <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300">Selected Files:</h3>
+                <ul class="list-disc list-inside text-gray-600 dark:text-gray-400" id="file-list"></ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Flowbite JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.js"></script>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
+        }
+
+        // Drag-and-drop visual feedback
+        const dropzoneLabel = document.getElementById("dropzone-label");
+        dropzoneLabel.addEventListener("dragover", () => dropzoneLabel.classList.add("border-blue-500"));
+        dropzoneLabel.addEventListener("dragleave", () => dropzoneLabel.classList.remove("border-blue-500"));
+
+        // File selection display
+        const fileList = document.getElementById("file-list");
+        function displayFileNames() {
+            const files = document.getElementById("dropzone-file").files;
+            fileList.innerHTML = ""; // Clear previous list
+            Array.from(files).forEach(file => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+                fileList.appendChild(listItem);
+            });
+        }
+
+        // Clear files
+        function clearFiles() {
+            document.getElementById("dropzone-file").value = "";
+            fileList.innerHTML = ""; // Clear file list display
+        }
+
+        // Simulate file upload
+        function uploadFiles() {
+            const files = document.getElementById("dropzone-file").files;
+            if (files.length === 0) {
+                alert("Please select files to upload.");
+                return;
+            }
+
+            // Show and start progress bar
+            const progressBar = document.getElementById("progress-bar");
+            const progress = document.getElementById("progress");
+            progressBar.classList.remove("hidden");
+            let width = 0;
+            const uploadInterval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(uploadInterval);
+                    alert("Files uploaded successfully!");
+                    clearFiles();
+                    progressBar.classList.add("hidden");
+                } else {
+                    width += 10;
+                    progress.style.width = width + "%";
+                }
+            }, 300);
+        }
+    </script>
+</body>
+
+</html>
